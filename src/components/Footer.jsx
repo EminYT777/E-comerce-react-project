@@ -77,7 +77,7 @@ export default function Footer() {
     <div className="d-flex gap-4 mt-4 fs-4 ">
         <i className="bi bi-facebook"></i>
         <i className="bi bi-twitter"></i>
-        <i class="bi bi-instagram"></i>
+        <i className="bi bi-instagram"></i>
         <i className="bi bi-linkedin"></i>
     </div>
 </div>
