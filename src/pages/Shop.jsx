@@ -18,26 +18,24 @@ export default function Shop() {
     }, []);
 
     const getAllProducts = () => {
-        axios.get(`${baseUrl}/products/all`)
+        axios
+            .get(`${baseUrl}/products/all`)
             .then((response) => {
                 setAllProducts(response.data);
                 setProducts(response.data);
             })
-            .catch((error) => {
-                console.log(error.message);
-            });
+            .catch((error) => console.log(error.message));
     };
 
     const addToCart = (product) => {
         const token = localStorage.getItem('token');
 
         if (token) {
-            axios.post(`${baseUrl}/cart/${product.id}?quantity=1`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(response => {
-                    alert("Product added to cart");
+            axios
+                .post(`${baseUrl}/cart/${product.id}?quantity=1`, {}, {
+                    headers: { Authorization: `Bearer ${token}` }
                 })
+                .then(() => alert("Product added to cart"))
                 .catch(error => console.log(error.message));
         } else {
             alert("Please login to add products to cart");
@@ -45,32 +43,24 @@ export default function Shop() {
     };
 
     const handleProductClick = (product) => {
-        navigate(`/products/${product.id}`, {
-            state: { product }
-        });
+        navigate(`/products/${product.id}`, { state: { product } });
     };
 
     const handleCategoryFilter = (category) => {
-        const filtered = allProducts.filter(product => product.category === category);
-        setProducts(filtered);
+        setProducts(allProducts.filter(p => p.category === category));
     };
 
     const handleRateFilter = (rate) => {
-        const filtered = allProducts.filter(product => product.rate === rate);
-        setProducts(filtered);
+        setProducts(allProducts.filter(p => p.rate === rate));
     };
 
     const handleSortChange = (event) => {
         const order = event.target.value === "1" ? "asc" : "desc";
-        const sorted = sortProductsByPrice([...products], order);
-        setProducts(sorted);
+        setProducts(sortProductsByPrice([...products], order));
     };
 
     const sortProductsByPrice = (arr, order = "asc") => {
-        return arr.sort((a, b) => {
-            if (order === "asc") return a.price - b.price;
-            return b.price - a.price;
-        });
+        return arr.sort((a, b) => (order === "asc" ? a.price - b.price : b.price - a.price));
     };
 
     const handleSearch = (e) => {
@@ -83,7 +73,7 @@ export default function Shop() {
         }
 
         const filtered = allProducts.filter((product) => {
-            const fullName = (product.brand + " " + product.model).toLowerCase();
+            const fullName = `${product.brand} ${product.model}`.toLowerCase();
             return fullName.includes(text);
         });
 
@@ -91,67 +81,62 @@ export default function Shop() {
     };
 
     const getUniqueCategories = () => {
-        const categories = allProducts.map(p => p.category);
-        return [...new Set(categories)];
+        return [...new Set(allProducts.map(p => p.category))];
     };
 
-    const ShowRate = ({ rate }) => {
-        return (
-            <>
-                {[1, 2, 3, 4, 5].map(i => (
-                    <i
-                        key={i}
-                        className={`bi bi-star-fill ${i <= rate ? "text-warning" : "text-secondary"}`}
-                    ></i>
-                ))}
-            </>
-        );
-    };
+    const ShowRate = ({ rate }) => (
+        <>
+            {[1, 2, 3, 4, 5].map(i => (
+                <i
+                    key={i}
+                    className={`bi bi-star-fill ${i <= rate ? "text-warning" : "text-secondary"}`}
+                ></i>
+            ))}
+        </>
+    );
 
     return (
-        <section className="container my-4">
-            <h1 className="my-3">Shop</h1>
+        <section className="container py-4">
+
+            <h1 className="text-center fw-bold mb-4 display-5">
+                🛍️ Shop Page
+            </h1>
 
             <div className="row">
 
-                {/* FILTERS LEFT SIDE */}
-                <div className="col-2">
+                <div className="col-3">
+                    <div className="p-4 rounded-4 shadow-sm bg-white">
 
-                    <input
-                        type="search"
-                        placeholder="Search..."
-                        className="form-control mb-3 w-100"
-                        value={searchTerm}
-                        onChange={handleSearch}
-                    />
+                        <input
+                            type="search"
+                            placeholder="Search..."
+                            className="form-control mb-4 rounded-pill px-3 shadow-sm"
+                            value={searchTerm}
+                            onChange={handleSearch}
+                        />
 
-                    {/* CATEGORY */}
-                    <div className="border-bottom my-3 py-2">
-                        <h3>Category</h3>
-                        <div className="ps-3 fw-bold fs-5">
+                        <h4 className="fw-bold mb-3">Category</h4>
+                        <div className="ps-2 mb-4">
                             {getUniqueCategories().map((category, index) => (
                                 <div
                                     key={index}
-                                    className="my-1"
+                                    className="py-2 px-3 mb-1 rounded-3 filter-item"
                                     onClick={() => handleCategoryFilter(category)}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: "pointer" }}
                                 >
                                     {category}
                                 </div>
                             ))}
                         </div>
-                    </div>
 
-                    {/* RATE */}
-                    <div className="border-bottom my-3 py-2">
-                        <h3>Rate</h3>
-                        <div className="ps-3 fw-bold fs-5">
+                        <h4 className="fw-bold mb-3">Rating</h4>
+                        <div className="ps-2">
                             {[5, 4, 3, 2, 1].map((rate) => (
                                 <div
                                     key={rate}
-                                    className="my-2"
-                                    onClick={() => handleRateFilter(rate)}
+                                    className="py-2 px-3 mb-1 rounded-3 filter-item"
                                     style={{ cursor: "pointer" }}
+                                    onClick={() => handleRateFilter(rate)}
                                 >
                                     {[...Array(rate)].map((_, i) => (
                                         <i key={i} className="bi bi-star-fill text-warning"></i>
@@ -160,76 +145,92 @@ export default function Shop() {
                             ))}
                         </div>
                     </div>
-
                 </div>
 
-                {/* PRODUCTS RIGHT SIDE */}
-                <div className="col-10">
+                <div className="col-9">
 
-                    <div className="w-25 mb-3">
-                        <button
-                            className="btn btn-danger mb-2"
-                            onClick={getAllProducts}
-                        >
+                    <div className="d-flex gap-3 mb-4">
+                        <button className="btn btn-danger px-4 rounded-pill shadow-sm"
+                                onClick={getAllProducts}>
                             All Products
                         </button>
 
-                        <select className="form-select" onChange={handleSortChange}>
+                        <select className="form-select w-auto rounded-pill px-3 shadow-sm"
+                                onChange={handleSortChange}>
                             <option defaultValue>Sort by</option>
                             <option value="1">Price: Low → High</option>
                             <option value="2">Price: High → Low</option>
                         </select>
                     </div>
 
-                    {/* PRODUCT CARDS */}
-                    <div className="row row-cols-2 row-cols-md-4 g-4">
+                    <div className="row row-cols-2 row-cols-md-3 g-4">
 
                         {products.map((product, index) => (
                             <div className="col" key={index}>
-                                <div className="card h-100 border-0">
+                                <div className="card border-0 shadow-sm rounded-4 product-card h-100">
 
-                                    <div className="bg-light p-3">
+                                    <div className="p-3 bg-light rounded-top-4">
                                         <img
                                             src={product.imageUrl}
-                                            className="card-img-top"
-                                            alt={`${product.brand} ${product.model}`}
+                                            onError={(e) => e.target.src = "https://via.placeholder.com/300x300?text=No+Image"}
+                                            className="card-img-top rounded-4 product-img"
+                                            alt=""
                                             style={{ cursor: "pointer" }}
                                             onClick={() => handleProductClick(product)}
                                         />
                                     </div>
 
                                     <div className="card-body">
-                                        <h6 className="card-title">
+                                        <h5 className="fw-semibold text-truncate">
                                             {product.brand} {product.model}
-                                        </h6>
+                                        </h5>
 
-                                        <div className="text-danger">
-                                            {product.price}$
-                                        </div>
+                                        <div className="text-danger fs-4 fw-bold">${product.price}</div>
 
-                                        <div>
+                                        <div className="mb-3">
                                             <ShowRate rate={product.rate} />
-                                            <span className="text-secondary">
+                                            <span className="text-secondary ms-1">
                                                 ({product.reviewsCount || Math.floor(Math.random() * 100)})
                                             </span>
                                         </div>
 
                                         <button
-                                            className="btn btn-dark w-100 my-2"
+                                            className="btn btn-dark w-100 rounded-pill py-2 shadow-sm"
                                             onClick={() => addToCart(product)}
                                         >
                                             Add to cart
                                         </button>
-
                                     </div>
+
                                 </div>
                             </div>
                         ))}
 
                     </div>
-
                 </div>
             </div>
+
+            <style>{`
+                .product-card {
+                    transition: 0.3s ease;
+                }
+                .product-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+                }
+                .product-img {
+                    transition: 0.4s;
+                }
+                .product-img:hover {
+                    transform: scale(1.07);
+                }
+                .filter-item:hover {
+                    background: #f3f3f3;
+                    transform: translateX(4px);
+                    transition: 0.2s;
+                }
+            `}</style>
+
         </section>
     );
 }

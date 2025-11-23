@@ -4,6 +4,8 @@ import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import  Shop from "../pages/Shop";
+import Product from "../pages/Product";
+import Cart from "../pages/Cart";
 
 export default function AppRoutes() {
     return (
@@ -12,7 +14,11 @@ export default function AppRoutes() {
                 <Route index element={<Home />} />
                 <Route path="register" element={<Register />} />
                 <Route path="login" element={<Login />} />
+
                 <Route path="shop" element={<Shop />} />
+                <Route path="products/:id" element={<Product />} />
+                
+                <Route path="cart" element={<Cart />}  />
             </Route>
         </Routes>
     )
