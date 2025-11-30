@@ -3,3 +3,11 @@ a {
     text-decoration: none;
     color: inherit;
 }
+.header a {
+    color: #000 !important;
+    text-decoration: none !important;
+}
+
+.header i {
+    color: #000 !important;
+}

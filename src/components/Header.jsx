@@ -4,13 +4,12 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { useEffect, useState } from "react";
-import { useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import AuthContext from "./AuthContext";
-
 
 export default function Header() {
     const { user, getUserAccount, logoutUser } = useContext(AuthContext);
+    const [openDropdown, setOpenDropdown] = useState(false);
 
     useEffect(() => {
         getUserAccount();
@@ -20,26 +19,64 @@ export default function Header() {
         await logoutUser();
     };
 
+    // Toggle dropdown
+    const toggleDropdown = () => {
+        setOpenDropdown((prev) => !prev);
+    };
+
     function renderProfileMenu() {
         if (user) {
             return (
-                <div className="profileMenu mx-3 d-flex align-items-center gap-2">
+                <div className="profileMenu mx-3 d-flex align-items-center gap-2 position-relative">
+
+                    {/* Cart */}
                     <Link to="/cart">
                         <i className="bi bi-cart3 fs-3 mx-3"></i>
                     </Link>
 
-                    <Link to="/profile">
+                    {/* Profile Icon (dropdown trigger) */}
+                    <div
+                        className="position-relative"
+                        style={{ cursor: "pointer" }}
+                        onClick={toggleDropdown}
+                    >
                         <i className="bi bi-person-circle fs-2"></i>
-                    </Link>
+
+                        {/* ---------- DROPDOWN MENU ---------- */}
+                        {openDropdown && (
+                            <div
+                                className="shadow bg-white p-3 rounded position-absolute"
+                                style={{
+                                    width: 200,
+                                    top: "110%",
+                                    right: 0,
+                                    zIndex: 100,
+                                }}
+                            >
+                                <Link className="dropdown-item py-2" to="/profile">
+                                    <i className="bi bi-person"></i> Manage My Account
+                                </Link>
+                                <Link className="dropdown-item py-2" to="/orders">
+                                    <i className="bi bi-box"></i> My Order
+                                </Link>
+                                <Link className="dropdown-item py-2" to="/cancellations">
+                                    <i className="bi bi-x-circle"></i> My Cancellations
+                                </Link>
+                                <Link className="dropdown-item py-2" to="/reviews">
+                                    <i className="bi bi-star"></i> My Reviews
+                                </Link>
+
+                                <button
+                                    className="dropdown-item text-danger py-2"
+                                    onClick={handleLogout}
+                                >
+                                    <i className="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
 
                     <span className="username">{user.username}</span>
-
-                    <button
-                        className="logoutBtn btn btn-danger"
-                        onClick={handleLogout}
-                    >
-                        Log out
-                    </button>
                 </div>
             );
         } else {
@@ -59,9 +96,14 @@ export default function Header() {
                 <div className="text-light bg-black">
                     <p className="text-center p-3">
                         Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
-                        <Link className="fw-bold mx-2" to={"/shop"}>
+                        <Link
+                            to="/shop"
+                            className="fw-bold mx-2 px-3 py-1 rounded"
+                            style={{ background: "white", color: "black" }}
+                        >
                             Shop now
                         </Link>
+
                     </p>
                 </div>
 
