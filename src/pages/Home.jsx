@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
-/* ------------------ Картинки для карусели ------------------ */
-const bannerImages = [
-  "https://m-cdn.phonearena.com/images/hub/238-wide-two_1200/Apple-iPhone-14-release-date-price-and-features.jpg",
-  "https://www.apple.com/v/iphone-17-pro/c/images/meta/iphone-17-pro_overview__er68vecct16q_og.png?202510300415",
-  "https://zagrangid.com/wp-content/uploads/iphone16.jpg",
-];
-
-/* ------------------ Главная страница ------------------ */
 export default function Home() {
   const navigate = useNavigate();
 
-  /* ------ Карусель ------ */
+  const bannerImages = [
+    "https://m-cdn.phonearena.com/images/hub/238-wide-two_1200/Apple-iPhone-14-release-date-price-and-features.jpg",
+    "https://www.apple.com/v/iphone-17-pro/c/images/meta/iphone-17-pro_overview__er68vecct16q_og.png?202510300415",
+    "https://zagrangid.com/wp-content/uploads/iphone16.jpg",
+  ];
+
   const [slide, setSlide] = useState(0);
   const next = () => setSlide((s) => (s + 1) % bannerImages.length);
-  const prev = () =>
-    setSlide((s) => (s === 0 ? bannerImages.length - 1 : s - 1));
+  const prev = () => setSlide((s) => (s === 0 ? bannerImages.length - 1 : s - 1));
 
   useEffect(() => {
     const timer = setInterval(next, 3000);
     return () => clearInterval(timer);
   }, []);
 
-  /* ------ Таймер ------ */
-  const [timeLeft, setTimeLeft] = useState(getTimeRemaining());
+  function getDailyCountdown() {
+    const now = new Date();
+    const tomorrow = new Date();
+    tomorrow.setHours(24, 0, 0, 0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeRemaining());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  function getTimeRemaining() {
-    const targetDate =
-      new Date().getTime() + 3 * 24 * 60 * 60 * 1000; // 3 дня
-    const now = new Date().getTime();
-    const t = targetDate - now;
-
+    const t = tomorrow - now;
     const days = Math.floor(t / (1000 * 60 * 60 * 24));
     const hours = Math.floor((t / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((t / 1000 / 60) % 60);
@@ -52,491 +39,543 @@ export default function Home() {
     };
   }
 
-  /* ------ Категории ------ */
-  const categories = [
-    { id: 1, label: "Phones", icon: "📱" },
-    { id: 2, label: "Computers", icon: "💻" },
-    { id: 3, label: "SmartWatch", icon: "⌚" },
-    { id: 4, label: "Camera", icon: "📷" },
-    { id: 5, label: "HeadPhones", icon: "🎧" },
-    { id: 6, label: "Gaming", icon: "🎮" },
-  ];
-
-  const [active, setActive] = useState(4);
+  const [timeLeft, setTimeLeft] = useState(getDailyCountdown());
+  useEffect(() => {
+    const interval = setInterval(() => setTimeLeft(getDailyCountdown()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div style={styles.page}>
       <main style={styles.main}>
-        {/* ------------------ Banner ------------------ */}
+
+
         <section style={styles.banner}>
           <div>
-            <h4 style={{ color: "#fff", marginBottom: 8 }}>iPhone 17 Series</h4>
+            <h4 style={{ color: "#ffffffff", marginBottom: 8 }}>iPhone 17 Series</h4>
             <h1 style={styles.bannerTitle}>Up to 10% off Voucher</h1>
 
-            <button style={styles.shopNow} onClick={() => navigate("/shop")}>
+            <Link to="/shop" style={styles.shopButton}>
               Shop Now →
-            </button>
+            </Link>
           </div>
 
           <div style={styles.sliderWrap}>
             <img src={bannerImages[slide]} alt="banner" style={styles.bannerImg} />
 
-            <button style={styles.arrowLeft} onClick={prev}>
-              ‹
-            </button>
-            <button style={styles.arrowRight} onClick={next}>
-              ›
-            </button>
+            <button style={styles.arrowLeft} onClick={prev}>‹</button>
+            <button style={styles.arrowRight} onClick={next}>›</button>
           </div>
         </section>
 
-        {/* ------------------ Flash Sales ------------------ */}
-        <section style={{ marginTop: 40 }}>
-          <h2 style={{ marginBottom: 10 }}>Today's Flash Sales</h2>
 
-          {/* TIMER */}
-          <div style={styles.timerRow}>
-            {[
-              { label: "Days", value: timeLeft.days },
-              { label: "Hours", value: timeLeft.hours },
-              { label: "Minutes", value: timeLeft.minutes },
-              { label: "Seconds", value: timeLeft.seconds },
-            ].map((t) => (
-              <div key={t.label} style={styles.timerBlock}>
-                <span style={{ fontSize: 20, fontWeight: 700 }}>{t.value}</span>
-                <small>{t.label}</small>
+        <section style={{ marginTop: 80 }}>
+          <div style={styles.redLabel}>Featured</div>
+          <h2 style={styles.sectionTitle}>Shop Collection</h2>
+
+          <div style={styles.collectionGrid}>
+
+            <div style={styles.collectionLeft}
+              className="collection-card"
+            >
+              <img
+                src="https://static.elitoptimal.az/ElitOptimal/79c4bf03-2a01-476f-a4c4-fa66f83416c0_Thumb.jpeg"
+                style={styles.imgBig}
+              />
+              <h3 style={styles.collectionTitle}>Headband</h3>
+              <Link to="/shop" style={styles.collectionLink}>Collection →</Link>
+            </div>
+
+            <div style={styles.collectionRight}>
+              <div style={styles.collectionSmall} className="collection-card">
+                <h3 style={styles.collectionTitle}>Airpods Pro</h3>
+                <Link to="/shop" style={styles.collectionLink}>Collection →</Link>
+                <img
+                  src="https://cdn.road.cc/sites/default/files/styles/main_width/public/2021-apple-airpods-pro.jpg"
+                  style={styles.imgSmall}
+                />
               </div>
-            ))}
-          </div>
 
-          {/* PRODUCTS */}
-          <div style={styles.productsRow}>
-            {products.map((p) => (
-              <div key={p.title} style={styles.productCard}>
-                <span style={styles.discount}>{p.discount}</span>
-                <img src={p.img} style={styles.productImg} />
-                <h4>{p.title}</h4>
-                <div>
-                  <span style={styles.priceNew}>${p.priceNew}</span>
-                  <span style={styles.priceOld}>${p.priceOld}</span>
-                </div>
-                <div style={styles.rating}>⭐⭐⭐⭐☆ ({p.reviews})</div>
+              <div style={styles.collectionSmall} className="collection-card">
+                <h3 style={styles.collectionTitle}>Accessories</h3>
+                <Link to="/shop" style={styles.collectionLink}>Collection →</Link>
+                <img
+                  src="https://strgimgr.umico.az/img/product/840/e5f8daef-37af-4f83-a840-7e21a2810bc6.jpeg"
+                  style={styles.imgSmall}
+                />
               </div>
-            ))}
+            </div>
           </div>
-
-          {/* BUTTON */}
-          <button style={styles.viewAll} onClick={() => navigate("/shop")}>
-            View All Products
-          </button>
         </section>
 
-        {/* ------------------ CATEGORIES ------------------ */}
-        <section style={{ marginTop: 60 }}>
-          <div style={styles.catLabel}>Categories</div>
-          <h2 style={styles.catTitle}>Browse By Category</h2>
 
-          <div style={styles.catRow}>
-            {categories.map((c) => (
-              <div
-                key={c.id}
-                onClick={() => setActive(c.id)}
+        <section style={{ marginTop: 100 }}>
+          <div style={styles.redLabel}>Special Promotion</div>
+          <h2 style={styles.sectionTitle}>Hurry Up! 40% OFF</h2>
+
+          <div style={styles.promoGrid}>
+            <img
+              src="https://www.meme-arsenal.com/memes/8f2089c5cab98a792aebae7711cf2190.jpg"
+              style={styles.promoImg}
+            />
+
+            <div style={styles.promoContent}>
+              <h2 style={{ fontSize: 36 }}>Limited Time Offer</h2>
+              <p style={{ color: "#555", width: 280 }}>
+                Thousands of high-tech products are waiting for you.
+              </p>
+
+              <div style={styles.timerRow}>
+                {[
+                  { label: "Days", val: timeLeft.days },
+                  { label: "Hours", val: timeLeft.hours },
+                  { label: "Minutes", val: timeLeft.minutes },
+                  { label: "Seconds", val: timeLeft.seconds },
+                ].map((t) => (
+                  <div key={t.label} style={styles.timerBlock}>
+                    <div style={styles.timerNumber}>{t.val}</div>
+                    <div style={styles.timerLabel}>{t.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <Link to="/shop" style={styles.promoButton}>Shop Now</Link>
+            </div>
+          </div>
+        </section>
+
+
+        <section style={{ marginTop: 100 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+            <div style={{ width: 12, height: 20, background: "#d00", borderRadius: 2 }}></div>
+            <span style={{ color: "#d00", fontWeight: 600 }}>Our Products</span>
+          </div>
+
+          <h2 style={{ fontSize: 32, fontWeight: 700, marginBottom: 25 }}>Special promotion</h2>
+
+          <div
+            style={{
+              background: "#1c1c25",
+              borderRadius: 14,
+              padding: "70px 60px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              alignItems: "center",
+              color: "#fff",
+            }}
+          >
+            <div>
+              <div style={{ opacity: 0.7, marginBottom: 10 }}>Pro. Beyond.</div>
+
+              <h1 style={{ fontSize: 54, fontWeight: 700, margin: 0 }}>
+                IPhone 17 pro max <span style={{ color: "#fff" }}>Pro</span>
+              </h1>
+
+              <p style={{ marginTop: 10, opacity: 0.7, maxWidth: 350 }}>
+                Created to change everything for the better.
+                For everyone
+              </p>
+
+              <button
+                onClick={() => navigate("/shop")}
                 style={{
-                  ...styles.catCard,
-                  ...(active === c.id ? styles.catActive : {}),
+                  marginTop: 30,
+                  padding: "14px 30px",
+                  border: "1px solid #fff",
+                  background: "transparent",
+                  color: "#fff",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  fontSize: 16,
                 }}
               >
-                <div style={styles.catIcon}>{c.icon}</div>
-                <div>{c.label}</div>
-              </div>
-            ))}
+                Shop Now
+              </button>
+            </div>
 
-            <div style={styles.catArrow}>←</div>
-            <div style={styles.catArrow}>→</div>
+            <img
+              src="https://static.technote.az/media/posts/thumbnail/Apple-iPhone-17-Pro-camera-close-up-250909_big.jpg.large_2x.jpeg"
+              style={{
+                width: "100%",
+                objectFit: "contain",
+                justifySelf: "end",
+              }}
+            />
           </div>
         </section>
 
-        {/* ------------------ NEW ARRIVAL (добавлено в конец) ------------------ */}
-        <section style={{ marginTop: 80 }}>
-          <div style={styles.featuredLabel}>Featured</div>
-          <h2 style={styles.newArrivalTitle}>New Arrival</h2>
 
-          <div style={styles.newGrid}>
-            {/* PlayStation */}
-            <div style={{ ...styles.newCard, ...styles.bigCard }}>
-              <img
-                src="https://c.files.bbci.co.uk/f310/live/f36de0e0-6f86-11ef-b410-fbf02dca0fc5.png"
-                style={styles.newImg}
-              />
-              <div style={styles.newTextWrap}>
-                <h3 style={styles.newTitle}>PlayStation 5</h3>
-                <p style={styles.newDesc}>
-                  Black and White version of the PS5 coming out on sale.
-                </p>
-                <span style={styles.newShop}>Shop Now</span>
-              </div>
+        <section style={{ marginTop: 120 }}>
+
+
+          <Container className="text-center mb-5">
+            <h2 className="text-danger" style={{ fontSize: 34, fontWeight: 700 }}>
+              Feedback Corner
+            </h2>
+          </Container>
+
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: 30,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                padding: 35,
+                borderRadius: 12,
+                boxShadow: "0 0 25px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div style={{ fontSize: 40, color: "#d00" }}>“</div>
+              <h3 style={{ marginTop: 5, marginBottom: 10 }}>Emily Wilson</h3>
+              <p style={{ opacity: 0.7 }}>
+                The customer experience was exceptional from start to finish. The website is user-friendly,
+                the checkout process was smooth, and the clothes I ordered fit perfectly. I’m beyond satisfied!
+              </p>
             </div>
 
-            {/* Women Collection */}
-            <div style={{ ...styles.newCard, ...styles.mediumCard }}>
-              <img
-                src="https://miro.medium.com/v2/resize:fit:1400/1*KhKN7SL3sTIvvtXSn_oLPQ.jpeg"
-                style={styles.newImg}
-              />
-              <div style={styles.newTextWrap}>
-                <h3 style={styles.newTitle}>Women’s Collections</h3>
-                <p style={styles.newDesc}>
-                  Featured women collections that give you another vibe.
-                </p>
-                <span style={styles.newShop}>Shop Now</span>
-              </div>
+            <div
+              style={{
+                background: "#f9e3e3",
+                padding: 35,
+                borderRadius: 12,
+              }}
+            >
+              <div style={{ fontSize: 40, color: "#d00" }}>“</div>
+              <h3 style={{ marginTop: 5, marginBottom: 10 }}>Sarah Thompson</h3>
+              <p style={{ opacity: 0.7 }}>
+                I absolutely love the quality and style of the clothing I purchased.
+                Customer service was outstanding, and my order arrived quickly.
+                Highly recommended!
+              </p>
             </div>
 
-            {/* Speakers */}
-            <div style={{ ...styles.newCard, ...styles.smallCard }}>
-              <img
-                src="https://i.guim.co.uk/img/media/f183d9937a705b78a19c48d286edd2031e262242/149_311_5091_3054/master/5091.jpg?width=465&dpr=1&s=none&crop=none"
-                style={styles.newImg}
-              />
-              <div style={styles.newTextWrap}>
-                <h3 style={styles.newTitle}>Speakers</h3>
-                <p style={styles.newDesc}>Amazon wireless speakers</p>
-                <span style={styles.newShop}>Shop Now</span>
-              </div>
-            </div>
-
-            {/* Perfume */}
-            <div style={{ ...styles.newCard, ...styles.smallCard }}>
-              <img
-                src="https://www.vperfumes.com/_next/image?url=https%3A%2F%2Fmedia.vperfumes.com%2Fproducts%2FGucci-Intense-Oud-EDP-For-Unisex-90ML-1731388689057.webp&w=1920&q=75"
-                style={styles.newImg}
-              />
-              <div style={styles.newTextWrap}>
-                <h3 style={styles.newTitle}>Perfume</h3>
-                <p style={styles.newDesc}>GUCCI INTENSE OUD EDP</p>
-                <span style={styles.newShop}>Shop Now</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Icons */}
-          <div style={styles.infoRow}>
-            <div style={styles.infoBox}>
-              <div style={styles.infoIcon}>🚚</div>
-              <h4 style={styles.infoTitle}>FREE AND FAST DELIVERY</h4>
-              <p style={styles.infoText}>Free delivery for all orders over $140</p>
-            </div>
-
-            <div style={styles.infoBox}>
-              <div style={styles.infoIcon}>🎧</div>
-              <h4 style={styles.infoTitle}>24/7 CUSTOMER SERVICE</h4>
-              <p style={styles.infoText}>Friendly 24/7 customer support</p>
-            </div>
-
-            <div style={styles.infoBox}>
-              <div style={styles.infoIcon}>✔️</div>
-              <h4 style={styles.infoTitle}>MONEY BACK GUARANTEE</h4>
-              <p style={styles.infoText}>We return money within 30 days</p>
+            <div
+              style={{
+                background: "#fff",
+                padding: 35,
+                borderRadius: 12,
+                boxShadow: "0 0 25px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div style={{ fontSize: 40, color: "#d00" }}>“</div>
+              <h3 style={{ marginTop: 5, marginBottom: 10 }}>Olivia Martinez</h3>
+              <p style={{ opacity: 0.7 }}>
+                I had a great experience shopping on this website. The clothes I bought are fashionable
+                and comfortable. Highly satisfied!
+              </p>
             </div>
           </div>
         </section>
+
+
+        <section style={{ marginTop: 120 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+            <div style={{ width: 12, height: 20, background: "#d00", borderRadius: 2 }}></div>
+            <span style={{ color: "#d00", fontWeight: 600 }}>Our Products</span>
+          </div>
+
+          <h2 style={{ fontSize: 32, fontWeight: 700, marginBottom: 35 }}>
+            Explore Our Products
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+              gap: 25,
+            }}
+          >
+            <div
+              style={{
+                background: "#f3f5f7",
+                borderRadius: 12,
+                padding: "30px 25px",
+                textAlign: "center",
+              }}
+            >
+              <img
+                src="https://cdn0.it4profit.com/s3size/el:t/rt:fill/plain/s3://cms/product/3f/6d/3f6d9919916a6b670582e90692a99c5a/250915140014016549.webp"
+                style={{ width: "75%", marginBottom: 20 }}
+              />
+              <h3 style={{ fontWeight: 600 }}>Popular Products</h3>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 20 }}>
+                iPod combines incredible performance, multitasking and ease of use.
+              </p>
+              <button
+                onClick={() => navigate("/shop")}
+                style={{
+                  padding: "10px 24px",
+                  background: "#000",
+                  color: "#fff",
+                  borderRadius: 6,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Shop Now
+              </button>
+            </div>
+
+            <div
+              style={{
+                background: "#f3f5f7",
+                borderRadius: 12,
+                padding: "30px 25px",
+                textAlign: "center",
+              }}
+            >
+              <img
+                src="https://kontakt.az/media/catalog/product/cache/a404967cc40694dc557cd869288440a4/N/e/New-Project-31_1_1.jpg"
+                style={{ width: "85%", marginBottom: 20 }}
+              />
+              <h3 style={{ fontWeight: 600 }}>Ipad Pro</h3>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 20 }}>
+                iPad contains a magnificent 10.2-inch Retina display, incredible performance.
+              </p>
+              <button
+                onClick={() => navigate("/shop")}
+                style={{
+                  padding: "10px 24px",
+                  background: "#000",
+                  color: "#fff",
+                  borderRadius: 6,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Shop Now
+              </button>
+            </div>
+
+            <div
+              style={{
+                background: "#f3f5f7",
+                borderRadius: 12,
+                padding: "30px 25px",
+                textAlign: "center",
+              }}
+            >
+              <img
+                src="https://kontakt.az/media/catalog/product/cache/a252e3db3d11365dd1457895056a5f34/t/m/tm-dg-sbp-1105-sm-2647_12.png"
+                style={{ width: "70%", marginBottom: 20 }}
+              />
+              <h3 style={{ fontWeight: 600 }}>Samsung Galaxy</h3>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 20 }}>
+                Samsung combines a magnificent 12-inch design, multitasking and power.
+              </p>
+              <button
+                onClick={() => navigate("/shop")}
+                style={{
+                  padding: "10px 24px",
+                  background: "#000",
+                  color: "#fff",
+                  borderRadius: 6,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Shop Now
+              </button>
+            </div>
+
+            <div
+              style={{
+                background: "#1c1c25",
+                borderRadius: 12,
+                padding: "30px 25px",
+                textAlign: "center",
+                color: "#fff",
+              }}
+            >
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4RnqL3BRteUchsR4S_rhSaG3UqQlcESUK8w&s"
+                style={{ width: "80%", marginBottom: 20 }}
+              />
+              <h3 style={{ fontWeight: 600 }}>Macbook Pro</h3>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 20 }}>
+                iPad contains a magnificent 12-inch Retina display, performance and multitasking.
+              </p>
+              <button
+                onClick={() => navigate("/shop")}
+                style={{
+                  padding: "10px 24px",
+                  background: "#fff",
+                  color: "#000",
+                  borderRadius: 6,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Shop Now
+              </button>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   );
 }
 
-/* ------------------ Products ------------------ */
-const products = [
-  {
-    title: "HAVIT HV-G92 Gamepad",
-    priceNew: 120,
-    priceOld: 160,
-    discount: "-40%",
-    reviews: 88,
-    img: "https://www.ultratech.com.bd/image/cache/catalog/gamepad/havit/hv-g92/havit-hv-g92-gamepad-500x500.jpg",
-  },
-  {
-    title: "Samsung Galaxy S21",
-    priceNew: 799.99,
-    priceOld: 1160,
-    discount: "-35%",
-    reviews: 75,
-    img: "https://i5.walmartimages.com/seo/Samsung-Galaxy-S21-Plus-5G-128-256GB-SM-G996U1-US-Model-Unlocked-Cell-Phones-Very-Good-Condition_46af8b5d-3a63-46e8-97d7-3a8f9fa35f00.4243b2ff1db36d328a46f09ad220d988.jpeg",
-  },
-  {
-    title: "Sony Sony PS5 Controller",
-    priceNew: 69.99,
-    priceOld: 400,
-    discount: "-30%",
-    reviews: 99,
-    img: "https://gmedia.playstation.com/is/image/SIEPDC/dualsense-controller-product-thumbnail-01-en-14sep21?$facebook$",
-  },
-  {
-    title: "Nike Nike Running Shoes",
-    priceNew: 89.99,
-    priceOld: 400,
-    discount: "-25%",
-    reviews: 95,
-    img: "https://www.nike.sa/dw/image/v2/BDVB_PRD/on/demandware.static/-/Sites-akeneo-master-catalog/default/dwebce1bf5/nk/943/4/1/3/1/1/94341311_2775_4950_ba7e_83c397a73349.jpg?sw=700&sh=700&sm=fit&q=100&strip=false",
-  },
-];
 
-/* ------------------ Styles ------------------ */
 const styles = {
-  page: {
-    display: "flex",
-    justifyContent: "center",
-    fontFamily: "Arial",
-    padding: 20,
-    background: "#fafafa",
-  },
+  page: { display: "flex", justifyContent: "center", padding: 20, background: "#fafafa" },
+  main: { width: "100%", maxWidth: 1200 },
 
-  main: {
-    width: "100%",
-    maxWidth: 1200,
-  },
-
-  /* ---- Banner ---- */
   banner: {
     background: "#000",
     color: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    height: 400,
+    padding: 40,
+    borderRadius: 14,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
   },
-
-  bannerTitle: { fontSize: 36, fontWeight: 700 },
-
-  shopNow: {
-    padding: "12px 25px",
-    borderRadius: 6,
-    border: "none",
+  bannerTitle: { fontSize: 42, fontWeight: 700 },
+  shopButton: {
+    display: "inline-block",
+    marginTop: 20,
+    padding: "12px 26px",
     background: "#fff",
-    cursor: "pointer",
-    fontSize: 16,
+    color: "#000",
+    fontWeight: 600,
+    borderRadius: 8,
+    textDecoration: "none",
+    transition: "0.3s",
   },
 
   sliderWrap: { position: "relative" },
-
   bannerImg: {
     width: 500,
     height: 300,
-    borderRadius: 10,
+    borderRadius: 14,
     objectFit: "cover",
-    transition: "0.6s ease",
   },
-
   arrowLeft: {
     position: "absolute",
     left: -50,
     top: "50%",
     transform: "translateY(-50%)",
-    fontSize: 32,
-    padding: "8px 16px",
-    borderRadius: 6,
+    background: "#ffffff40",
     border: "none",
-    background: "#ffffff50",
+    fontSize: 32,
+    padding: 10,
     cursor: "pointer",
+    borderRadius: 8,
   },
-
   arrowRight: {
     position: "absolute",
     right: -50,
     top: "50%",
     transform: "translateY(-50%)",
-    fontSize: 32,
-    padding: "8px 16px",
-    borderRadius: 6,
+    background: "#ffffff40",
     border: "none",
-    background: "#ffffff50",
+    fontSize: 32,
+    padding: 10,
     cursor: "pointer",
-  },
-
-  /* ---- Timer ---- */
-  timerRow: { display: "flex", gap: 20, marginTop: 20 },
-
-  timerBlock: {
-    background: "#eee",
-    padding: "10px 15px",
     borderRadius: 8,
-    textAlign: "center",
   },
 
-  /* ---- Products ---- */
-  productsRow: { display: "flex", gap: 25, flexWrap: "wrap", marginTop: 20 },
+  redLabel: { color: "#d00", fontWeight: 600, marginBottom: 5 },
+  sectionTitle: { fontSize: 32, fontWeight: 700, marginBottom: 25 },
 
-  productCard: {
-    width: 200,
-    padding: 15,
-    background: "#fff",
-    borderRadius: 10,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-    position: "relative",
-  },
-
-  discount: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    background: "red",
-    color: "#fff",
-    padding: "2px 6px",
-    borderRadius: 4,
-    fontSize: 12,
-  },
-
-  productImg: {
-    width: "100%",
-    height: 120,
-    objectFit: "contain",
-    marginBottom: 10,
-  },
-
-  priceNew: { color: "red", fontWeight: 700, marginRight: 10 },
-  priceOld: { color: "#888", textDecoration: "line-through" },
-
-  rating: { marginTop: 5 },
-
-  viewAll: {
-    display: "block",
-    margin: "30px auto 0 auto",
-    padding: "12px 25px",
-    background: "#d60000",
-    color: "#fff",
-    border: "none",
-    borderRadius: 6,
-    cursor: "pointer",
-  },
-
-  /* ---- Categories ---- */
-  catLabel: { color: "#d00", fontWeight: 600, marginBottom: 8 },
-  catTitle: { fontSize: 28, fontWeight: 700, marginBottom: 20 },
-
-  catRow: {
-    display: "flex",
-    gap: 20,
-    position: "relative",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-
-  catCard: {
-    width: 150,
-    height: 130,
-    border: "1px solid #ddd",
-    borderRadius: 10,
-    background: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    transition: ".2s",
-    fontSize: 16,
-  },
-
-  catActive: {
-    background: "#d9534f",
-    color: "#fff",
-    border: "1px solid #d9534f",
-  },
-
-  catIcon: { fontSize: 36, marginBottom: 8 },
-
-  catArrow: {
-    width: 40,
-    height: 40,
-    background: "#eee",
-    borderRadius: "50%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    fontSize: 20,
-  },
-
-  /* ------------------ New Arrival ------------------ */
-  featuredLabel: {
-    color: "#d00",
-    fontWeight: 600,
-    marginBottom: 5,
-  },
-  newArrivalTitle: {
-    fontSize: 32,
-    fontWeight: 700,
-    marginBottom: 25,
-  },
-  newGrid: {
+  collectionGrid: {
     display: "grid",
-    gridTemplateColumns: "2fr 1fr",
-    gridTemplateRows: "300px 150px",
+    gridTemplateColumns: "1.4fr 1fr",
     gap: 20,
   },
-  newCard: {
+
+  collectionLeft: {
+    background: "#f3f5f7",
+    padding: 30,
+    borderRadius: 14,
     position: "relative",
-    borderRadius: 10,
-    overflow: "hidden",
   },
-  bigCard: {
-    gridRow: "1 / 3",
+
+  collectionRight: {
+    display: "grid",
+    gridTemplateRows: "1fr 1fr",
+    gap: 20,
   },
-  mediumCard: {
-    height: "300px",
+
+  collectionSmall: {
+    background: "#f3f5f7",
+    padding: 30,
+    borderRadius: 14,
+    position: "relative",
   },
-  smallCard: {
-    height: "150px",
+
+  imgBig: {
+    width: "90%",
+    height: "auto",
+    marginBottom: 20,
+    objectFit: "contain",
   },
-  newImg: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    filter: "brightness(60%)",
-  },
-  newTextWrap: {
+
+  imgSmall: {
+    width: "60%",
     position: "absolute",
+    right: 20,
     bottom: 20,
-    left: 20,
-    color: "#fff",
   },
-  newTitle: {
+
+  collectionTitle: {
     fontSize: 22,
     fontWeight: 700,
   },
-  newDesc: {
+
+  collectionLink: {
+    marginTop: 6,
+    display: "inline-block",
     fontSize: 14,
-    maxWidth: 250,
-    margin: "5px 0",
-  },
-  newShop: {
-    fontSize: 14,
-    fontWeight: 600,
-    textDecoration: "underline",
-    cursor: "pointer",
+    color: "#000",
+    opacity: 0.7,
+    textDecoration: "none",
   },
 
-  /* Info Icons */
-  infoRow: {
-    marginTop: 60,
-    display: "flex",
-    justifyContent: "space-between",
+  promoGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 20,
+    borderRadius: 14,
+    overflow: "hidden",
+  },
+
+  promoImg: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+
+  promoContent: {
+    background: "#f5f5f5",
+    padding: 40,
+  },
+
+  timerRow: { display: "flex", gap: 15, margin: "25px 0" },
+
+  timerBlock: {
+    background: "#fff",
+    padding: "12px 16px",
+    borderRadius: 10,
+    minWidth: 70,
     textAlign: "center",
   },
-  infoBox: {
-    width: "30%",
-  },
-  infoIcon: {
-    fontSize: 40,
-    marginBottom: 10,
-  },
-  infoTitle: {
-    fontWeight: 700,
-    fontSize: 16,
-  },
-  infoText: {
-    fontSize: 13,
-    color: "#555",
+  timerNumber: { fontSize: 22, fontWeight: 700 },
+  timerLabel: { fontSize: 12, opacity: 0.6 },
+
+  promoButton: {
+    padding: "12px 28px",
+    background: "#000",
+    color: "#fff",
+    borderRadius: 8,
+    textDecoration: "none",
+    display: "inline-block",
+    fontWeight: 600,
   },
 };

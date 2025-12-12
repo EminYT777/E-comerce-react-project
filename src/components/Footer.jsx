@@ -1,10 +1,10 @@
 export default function Footer() {
     return (
-        <footer className="p-5 text-light mt-5 bg-black">
+        <footer className="p-5 text-light mt-5 bg-danger">
             <div className="row g-4">
 
                 <div className="col-12 col-md-2">
-                    <h4 className="mb-3">Exclusive</h4>
+                    <h4 className="mb-3">E-commerce</h4>
                     <p>Subscribe</p>
                     <p>Get 10% off your first order</p>
                     <div className="d-flex mt-3">
